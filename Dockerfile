@@ -4,7 +4,7 @@ ARG NODE_VERSION=20.12.2
 ############################
 # Base
 ############################
-FROM node:-alpine AS base
+FROM node:${NODE_VERSION}-alpine AS base
 WORKDIR /usr/src/app
 # Use npm; if you prefer pnpm/yarn, enable corepack and adjust commands
 COPY package*.json ./
@@ -32,7 +32,7 @@ RUN npm run build
 ############################
 # Prod runtime
 ############################
-FROM node:-alpine AS prod
+FROM node:${NODE_VERSION}-alpine AS prod
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
 COPY --from=build /usr/src/app/package*.json ./

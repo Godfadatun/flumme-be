@@ -1,3 +1,5 @@
+# Flumme API
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -18,81 +20,267 @@
     <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
   <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository with Docker support for development and production environments.
 
-## Project setup
+## Prerequisites
 
+Before running this project, ensure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **npm** or **yarn**
+- **Docker Desktop** (for containerized development)
+- **Git**
+
+### Installing Docker Desktop
+
+If you don't have Docker Desktop installed:
+
+**macOS:**
 ```bash
-$ npm install
+# Using Homebrew
+brew install --cask docker
+
+# Or download from https://www.docker.com/products/docker-desktop
 ```
 
-## Compile and run the project
+**Windows:**
+- Download from [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
 
+**Linux:**
+- Follow the [Docker Engine installation guide](https://docs.docker.com/engine/install/)
+
+## Development Environment Setup
+
+### Option 1: Docker (Recommended)
+
+This is the easiest way to get started as it includes the database and all dependencies.
+
+1. **Clone the repository:**
+```bash
+git clone <repository-url>
+cd flumme
+```
+
+2. **Start Docker Desktop:**
+   - Open Docker Desktop application
+   - Wait for it to fully start (you should see the Docker icon in your menu bar)
+
+3. **Build and run the application:**
+```bash
+# Build and start all services
+docker compose up --build
+
+# Or run in detached mode (background)
+docker compose up --build -d
+```
+
+4. **Access the application:**
+   - API: http://localhost:3000
+   - Database: PostgreSQL on localhost:5432
+
+5. **View logs:**
+```bash
+# View all logs
+docker compose logs
+
+# View specific service logs
+docker compose logs nest-api
+docker compose logs nest-db
+
+# Follow logs in real-time
+docker compose logs -f
+```
+
+6. **Stop the application:**
+```bash
+# Stop and remove containers
+docker compose down
+
+# Stop and remove containers + volumes (will delete database data)
+docker compose down -v
+```
+
+### Option 2: Local Development
+
+If you prefer to run the application locally without Docker:
+
+1. **Install dependencies:**
+```bash
+npm install
+```
+
+2. **Set up the database:**
+   - Install PostgreSQL locally
+   - Create a database named `flumme`
+   - Update database connection settings in your environment
+
+3. **Run the application:**
 ```bash
 # development
-$ npm run start
+npm run start
 
-# watch mode
-$ npm run start:dev
+# watch mode (recommended for development)
+npm run start:dev
 
 # production mode
-$ npm run start:prod
+npm run start:prod
 ```
 
-## Run tests
+## Project Structure
+
+```
+flumme/
+├── src/                    # Application source code
+│   ├── app.controller.ts   # Main controller
+│   ├── app.service.ts      # Main service
+│   ├── app.module.ts       # Root module
+│   └── main.ts            # Application entry point
+├── test/                   # Test files
+├── dist/                   # Compiled output
+├── Dockerfile             # Docker configuration
+├── docker-compose.yml     # Docker Compose configuration
+└── package.json           # Dependencies and scripts
+```
+
+## Available Scripts
 
 ```bash
-# unit tests
-$ npm run test
+# Development
+npm run start              # Start the application
+npm run start:dev          # Start in watch mode (auto-reload)
+npm run start:debug        # Start in debug mode
+npm run start:prod         # Start in production mode
 
-# e2e tests
-$ npm run test:e2e
+# Testing
+npm run test               # Run unit tests
+npm run test:watch         # Run tests in watch mode
+npm run test:cov           # Run tests with coverage
+npm run test:debug         # Run tests in debug mode
+npm run test:e2e           # Run end-to-end tests
 
-# test coverage
-$ npm run test:cov
+# Building
+npm run build              # Build the application
+npm run build:webpack      # Build with webpack
+
+# Linting
+npm run lint               # Run ESLint
+npm run lint:fix           # Fix ESLint issues
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Docker Commands Reference
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Build images
+docker compose build
+
+# Start services
+docker compose up
+
+# Start services in background
+docker compose up -d
+
+# Stop services
+docker compose down
+
+# View running containers
+docker compose ps
+
+# Execute commands in running containers
+docker compose exec nest-api npm run test
+docker compose exec nest-db psql -U postgres -d flumme
+
+# View container logs
+docker compose logs nest-api
+docker compose logs nest-db
+
+# Rebuild and restart services
+docker compose up --build
+
+# Remove all containers and volumes
+docker compose down -v
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Troubleshooting
 
-## Resources
+### Docker Issues
 
-Check out a few resources that may come in handy when working with NestJS:
+**"Cannot connect to the Docker daemon"**
+- Make sure Docker Desktop is running
+- Restart Docker Desktop if needed
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**"docker compose command not found"**
+- Install Docker Compose: `brew install docker-compose`
+- Or use: `docker-compose` (with hyphen) instead of `docker compose`
 
-## Support
+**Port already in use**
+- Stop other services using ports 3000 or 5432
+- Or change ports in `docker-compose.yml`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Permission denied errors**
+- Make sure your user has Docker permissions
+- On macOS/Linux: `sudo usermod -aG docker $USER`
 
-## Stay in touch
+### Application Issues
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Database connection errors**
+- Ensure PostgreSQL container is running: `docker compose ps`
+- Check database logs: `docker compose logs nest-db`
+
+**Node modules not found**
+- Rebuild the container: `docker compose up --build`
+- Or install locally: `npm install`
+
+**Hot reload not working**
+- Ensure you're using `npm run start:dev` or Docker with volume mounts
+- Check file permissions in mounted volumes
+
+## Environment Variables
+
+Create a `.env` file in the root directory for local development:
+
+```env
+# Database
+DATABASE_URL=postgresql://postgres:password@localhost:5432/flumme
+
+# Application
+NODE_ENV=development
+PORT=3000
+```
+
+## API Documentation
+
+Once the application is running, you can access:
+
+- **Health Check**: GET http://localhost:3000/
+- **API Documentation**: Available at http://localhost:3000/api (if Swagger is configured)
+
+## Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run end-to-end tests
+npm run test:e2e
+
+# Run tests with coverage
+npm run test:cov
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is [MIT licensed](LICENSE).
