@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      target: dev
+    container_name: nest-api
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      # If you use DB, point to the service name below:
+      # DATABASE_URL: postgres://nest:nest@db:5432/nest
+    volumes:
+      - .:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - db
+    # Remove depends_on if you don't need Postgres
+
+  db:
+    image: postgres:16-alpine
+    container_name: nest-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nest
+      POSTGRES_PASSWORD: nest
+      POSTGRES_DB: nest
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  node_modules:
+  pgdata:
